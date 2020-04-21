@@ -25,8 +25,15 @@ const StudentTable = (props) => {
                             <td className="Row" >{list.firstName} </td>
                             <td className="Row" >{list.lastName} </td>
                             <td className="Row" >{list.Aggregate} </td>
-                            <td className="Row Delete" onClick={() => props.delButtonSearchRow(list.id)}>Delete</td>
-                            <td className="Row Edit" >Edit</td>
+                            <td className="Row Delete" onClick={() => props.delButtonRow(list.id)}>Delete</td>
+                            <td className="Row" >
+                                <EditModal
+                                    firstName={list.firstName}
+                                    lastName={list.lastName}
+                                    Aggregate={list.Aggregate}
+                                    id={list.id}
+                                    editHandler={props.editHandler} />
+                            </td>
                         </tr>
                     </tbody>
                 ) : props.studentList.map((list, index) =>
@@ -37,21 +44,20 @@ const StudentTable = (props) => {
                             <td className="Row" >{list.firstName} </td>
                             <td className="Row" >{list.lastName} </td>
                             <td className="Row" >{list.Aggregate} </td>
-                            <td className="Row Delete" onClick={() => props.delButtonRow(index)}>Delete</td>
+                            <td className="Row Delete" onClick={() => props.delButtonRow(list.id)}>Delete</td>
                             <td className="Row">
-                                <EditModal 
-                                index = {index}
-                                firstName={list.firstName}
-                                lastName={list.lastName}
-                                Aggregate={list.Aggregate}
-                                id={list.id}
-                                editHandler={props.editHandler}/>
+                                <EditModal
+                                    firstName={list.firstName}
+                                    lastName={list.lastName}
+                                    Aggregate={list.Aggregate}
+                                    id={list.id}
+                                    editHandler={props.editHandler} />
                             </td>
                         </tr>
                     </tbody>
-                
+
                 )
-                }
+            }
         </table>
     )
 }

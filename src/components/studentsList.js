@@ -38,9 +38,14 @@ class StudentList extends Component {
         const searchList = studentList.filter(item => {
             return item.firstName.toLowerCase().concat(item.lastName.toLowerCase()).includes(input.toLowerCase())
         })
-        if (searchList == '') { alert("no data found") }
+        if (searchList == '') { 
+            alert("no data found")
+            this.setState({
+                studentList: studentList,
+                input: ''
+            })  }
         this.setState({
-            searchList: searchList
+            searchList : searchList
         })
     }
 
@@ -52,12 +57,6 @@ class StudentList extends Component {
             searchList: [],
             studentList: studentList
         })
-    }
-
-    //------Function takes the position to add data to corresponding position------
-    positionHandler = (event) => {
-        const pos = event.target.value
-        this.setState({ pos: pos })
     }
 
     //------Function to take the id of data to be deletd --------
@@ -83,25 +82,21 @@ class StudentList extends Component {
     }
 
     //--------Function to delete corresponding data in a row-------
-    delButtonRow = (index) => {
-        let { studentList } = this.state
-        studentList.splice(index, 1)
-        this.setState({
-            studentList: studentList,
-            pos: studentList.length + 1
-        })
-    }
-
-    //------Function to delete data in a searched list-------- 
-    delButtonSearchRow = (id) => {
+    delButtonRow = (id) => {
         let { studentList } = this.state
         const newList = studentList.filter(item => item.id != id)
         this.setState({
             studentList: newList,
             searchList: [],
-            pos: newList.length + 1,
-            input: ''
+            input: '',
+            pos: studentList.length + 1
         })
+    }
+    
+    //------Function takes the position to add data to corresponding position------
+    positionHandler = (event) => {
+        const pos = event.target.value
+        this.setState({ pos: pos })
     }
 
     //-------Function to take Id for new data------- 
@@ -138,12 +133,21 @@ class StudentList extends Component {
         })
     }
 
-    editHandler = (item) => {   
-        const {index, id, fName, lName, aggr} = item
-        const {studentList} = this.state
-        studentList.splice(index, 1,{id: id, firstName: fName, lastName: lName, Aggregate: aggr})
+    editHandler = (item) => {
+        const { id, fName, lName, aggr } = item
+        const { studentList } = this.state
+
+        // const fullId = studentList.map(item=> item.id)
+        // console.log(fullId)
+        // const checkid = (ids) => {return ids==id}
+        const findindex = studentList.findIndex(item => item.id === id) 
+        console.log(findindex);
+        
+        studentList.splice(findindex, 1, { id: id, firstName: fName, lastName: lName, Aggregate: aggr })
         this.setState({
-            studentList:studentList
+            studentList: studentList,
+            searchList: [],
+            input: ''
         })
     }
     render() {
@@ -158,7 +162,6 @@ class StudentList extends Component {
                         searchList={this.state.searchList}
                         studentList={this.state.studentList}
                         delButtonRow={this.delButtonRow}
-                        delButtonSearchRow={this.delButtonSearchRow}
                         editHandler={this.editHandler} />
                 </div>
                 <div className="add">

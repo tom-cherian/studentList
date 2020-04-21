@@ -1,24 +1,39 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 const EditModal = (props) => {
-    const { index,  id, editHandler, firstName, lastName, Aggregate } = props
+    const { id, editHandler, firstName, lastName, Aggregate, modalOpen } = props
 
-    const[modal,setModal]= useState(false) 
-    const toggle = () => {setModal(!modal)}
+    const [modal, setModal] = useState(false)
+    const toggle = () => { setModal(!modal) }
 
-    const [editId,setEditId] = useState(id)
-    const editIdHandler = (event) => {setEditId(event.target.value)}
+    const [student, setEditedValues] = useState({
+        editId: id,
+        editFName: firstName,
+        editLName: lastName,
+        editAggr: Aggregate
+    })
+
+    const onChange = (event) => {
+        setEditedValues({
+            ...student,
+            [event.target.name]: event.target.value
+        })
+    }
+
+    useEffect(() => {
+        if (student.editId !== id) {
+            setEditedValues({
+                editId: id,
+                editFName: firstName,
+                editLName: lastName,
+                editAggr: Aggregate
+            })
+        }
+    });
     
-    const [editFName,setEditFName] = useState(firstName)
-    const editFNameHandler = (event) => {setEditFName(event.target.value)}
-
-    const [editLName, setEditLName] = useState(lastName)
-    const editLNameHandler = (event) => {setEditLName(event.target.value)}
-
-    const [editAggr, setEditAggr] = useState(Aggregate)
-    const editAggrHandler = (event) => {setEditAggr(event.target.value)}
-
+    const { editId, editFName, editLName, editAggr } = student
+    console.log(editId,id)
     return (
         <div>
             <Button color='primary' onClick={toggle}> Edit</Button>
@@ -26,18 +41,18 @@ const EditModal = (props) => {
                 <ModalHeader toggle={toggle}>Modal title</ModalHeader>
                 <ModalBody>
                     <label>Enter edited Id:</label><br />
-                    <input type="number" placeholder="Enter newId" value={editId} onChange={editIdHandler} /><br /><br />
+                    <input type="number" name="editId" placeholder="Enter newId" value={editId} onChange={onChange} /><br /><br />
                     <label>Enter edited First Name:</label><br />
-                    <input type="text" placeholder="first name" value={editFName}  onChange={editFNameHandler} /><br /><br />
+                    <input type="text" name="editFName" placeholder="first name" value={editFName} onChange={onChange} /><br /><br />
                     <label>Enter edited Last Name:</label><br />
-                    <input type="text" placeholder="last name" value={editLName} onChange={editLNameHandler} /><br /><br />
+                    <input type="text" name="editLName" placeholder="last name" value={editLName} onChange={onChange} /><br /><br />
                     <label>Enter edited aggregate:</label><br />
-                    <input  placeholder="Aggregate" value={editAggr} onChange={editAggrHandler} />
+                    <input name="editAggr" placeholder="Aggregate" value={editAggr} onChange={onChange} />
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="primary" 
-                        onClick={ () => {editHandler({index: index, id: editId, fName: editFName, lName: editLName, aggr: editAggr }); toggle()}}>
-                            Save
+                    <Button color="primary"
+                        onClick={() => { editHandler({ id: editId, fName: editFName, lName: editLName, aggr: editAggr.endsWith('%') ? editAggr : editAggr + '%' }); toggle() }}>
+                        Save
                     </Button>{' '}
                     <Button color="secondary" onClick={toggle}>Cancel</Button>
                 </ModalFooter>
