@@ -3,6 +3,7 @@ import React from 'react'
 import EditModal from './editModal'
 
 const StudentTable = (props) => {
+    const { searchList, studentList, delButtonRow, editHandler, setIndex } = props
     return (
         <table>
             <thead>
@@ -16,8 +17,8 @@ const StudentTable = (props) => {
                     <th className="Row">Edit</th>
                 </tr>
             </thead>
-            {props.searchList.length ?
-                props.searchList.map((list, index) =>
+            {searchList.length ?
+                searchList.map((list, index) =>
                     <tbody key={index}>
                         <tr>
                             <td className="Row" >{index + 1} </td>
@@ -25,20 +26,20 @@ const StudentTable = (props) => {
                             <td className="Row" >{list.firstName} </td>
                             <td className="Row" >{list.lastName} </td>
                             <td className="Row" >{list.Aggregate} </td>
-                            <td className="Row Delete" onClick={() => props.delButtonRow(list.id)}>Delete</td>
+                            <td className="Row Delete" onClick={() => delButtonRow(list.id)}>Delete</td>
                             <td className="Row" >
                                 <EditModal
                                     firstName={list.firstName}
                                     lastName={list.lastName}
                                     Aggregate={list.Aggregate}
                                     id={list.id}
-                                    editHandler={props.editHandler}
-                                    setIndex={props.setIndex}
+                                    editHandler={editHandler}
+                                    setIndex={setIndex}
                                      />
                             </td>
                         </tr>
                     </tbody>
-                ) : props.studentList.map((list, index) =>
+                ) : studentList.map((list, index) =>
                     <tbody key={index}>
                         <tr>
                             <td className="Row" >{index + 1} </td>
@@ -46,15 +47,15 @@ const StudentTable = (props) => {
                             <td className="Row" >{list.firstName} </td>
                             <td className="Row" >{list.lastName} </td>
                             <td className="Row" >{list.Aggregate} </td>
-                            <td className="Row Delete" onClick={() => props.delButtonRow(list.id)}>Delete</td>
+                            <td className="Row Delete" onClick={() => delButtonRow(list.id)}>Delete</td>
                             <td className="Row">
                                 <EditModal
                                     firstName={list.firstName}
                                     lastName={list.lastName}
                                     Aggregate={list.Aggregate}
                                     id={list.id}
-                                    editHandler={props.editHandler}
-                                    setIndex={props.setIndex} />
+                                    editHandler={editHandler}
+                                    setIndex={setIndex} />
                             </td>
                         </tr>
                     </tbody>
@@ -66,8 +67,3 @@ const StudentTable = (props) => {
 }
 
 export default StudentTable;
-
-
-
-
-// className="Row Edit" onClick={() => props.editHandler(props.show)}

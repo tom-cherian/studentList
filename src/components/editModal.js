@@ -23,7 +23,7 @@ const EditModal = (props) => {
 
     useEffect(() => {
         setEditedValues({
-            editId: '',
+            editId: id,
             editFName: firstName,
             editLName: lastName,
             editAggr: Aggregate
@@ -33,12 +33,12 @@ const EditModal = (props) => {
     const { editId, editFName, editLName, editAggr } = student
     return (
         <div>
-            <Button color='primary' onClick={() => { toggle();  setIndex(id)  }}> Edit</Button>
+            <Button color='primary' onClick={() => { toggle(); setIndex(id) }}> Edit</Button>
             <Modal isOpen={modal} toggle={toggle}>
                 <ModalHeader toggle={toggle}>Modal title</ModalHeader>
                 <ModalBody>
                     <label>Enter edited Id:</label><br />
-                    <input type="number" name="editId" placeholder="Enter newId" value={editId} onChange={onChange} isRe/><br /><br />
+                    <input type="number" name="editId" placeholder="Enter newId" value={editId} onChange={onChange} isRe /><br /><br />
                     <label>Enter edited First Name:</label><br />
                     <input type="text" name="editFName" placeholder="first name" value={editFName} onChange={onChange} /><br /><br />
                     <label>Enter edited Last Name:</label><br />
@@ -48,7 +48,15 @@ const EditModal = (props) => {
                 </ModalBody>
                 <ModalFooter>
                     <Button color="primary"
-                        onClick={() => { editHandler({ id: editId, fName: editFName, lName: editLName, aggr: editAggr.endsWith('%') ? editAggr : editAggr + '%' }); toggle() }}>
+                        onClick={() => {
+                            editHandler({
+                                id: editId,
+                                fName: editFName.charAt(0).toUpperCase() + editFName.slice(1),
+                                lName: editLName.charAt(0).toUpperCase() + editLName.slice(1),
+                                aggr: editAggr.endsWith('%') ? editAggr : editAggr + '%'
+                            });
+                            toggle()
+                        }}>
                         Save
                     </Button>{' '}
                     <Button color="secondary" onClick={toggle}>Cancel</Button>

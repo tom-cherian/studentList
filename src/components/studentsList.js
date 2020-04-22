@@ -11,42 +11,47 @@ class StudentList extends Component {
     state = {
         studentList: [],
         searchList: [],
-        input: '',
-        id: '',
-        fName: '',
-        lName: '',
-        aggr: '',
-        pos: 0,
+        searchInput: '',
         idToDelete: '',
-        editingIndex:''
+        editingIndex: '',
+        newStudentData: {
+            id: '',
+            fName: '',
+            lName: '',
+            aggr: '',
+            pos: 0
+        }
     }
 
     componentDidMount() {
         const { lists } = this.props
         this.setState({
             studentList: [...lists],
+            newStudentData : {
             pos: lists.length + 1,
+            }
         })
     }
 
     //-------Function to seach the Name--------
     onSearchHandler = (event) => {
-        const { studentList, input } = this.state
+        const { studentList, searchInput } = this.state
         const searchString = event.target.value;
         this.setState({
-            input: searchString
+            searchInput: searchString
         })
         const searchList = studentList.filter(item => {
-            return item.firstName.toLowerCase().concat(item.lastName.toLowerCase()).includes(input.toLowerCase())
+            return item.firstName.toLowerCase().concat(item.lastName.toLowerCase()).includes(searchInput.toLowerCase())
         })
-        if (searchList == '') { 
+        if (searchList == '') {
             alert("no data found")
             this.setState({
                 studentList: studentList,
-                input: ''
-            })  }
+                searchInput: ''
+            })
+        }
         this.setState({
-            searchList : searchList
+            searchList: searchList
         })
     }
 
@@ -54,7 +59,7 @@ class StudentList extends Component {
     clearHandler = () => {
         const { studentList } = this.state
         this.setState({
-            input: '',
+            searchInput: '',
             searchList: [],
             studentList: studentList
         })
@@ -75,9 +80,13 @@ class StudentList extends Component {
             this.setState({ idToDelete: '' })
         } else {
             this.setState({
+                searchList: [],
+                searchInput: '',
                 studentList: newList,
                 idToDelete: '',
+                newStudentData:{
                 pos: newList.length + 1
+                }
             })
         }
     }
@@ -86,113 +95,102 @@ class StudentList extends Component {
     delButtonRow = (id) => {
         let { studentList } = this.state
         const newList = studentList.filter(item => item.id != id)
+        debugger
         this.setState({
             studentList: newList,
             searchList: [],
-            input: '',
-            pos: studentList.length + 1
+            searchInput: '',
+            newStudentData:{
+                pos: newList.length + 1
+                }
         })
-    }
-    
-    //------Function takes the position to add data to corresponding position------
-    positionHandler = (event) => {
-        const pos = event.target.value
-        this.setState({ pos: pos })
+
     }
 
-    //-------Function to take Id for new data------- 
-    newIdHandler = (event) => {
-        const newId = event.target.value
-        this.setState({ id: newId })
-    }
-
-    //-------Function to take First Name for new data-------
-    firstNameHandler = (event) => {
-        const fname = event.target.value
-        this.setState({ fName: fname })
-    }
-
-    //-------Function to take Last Name for new data-------
-    lastNameHandler = (event) => {
-        const lname = event.target.value
-        this.setState({ lName: lname })
-    }
-
-    //-------Function to take Aggregate for new data-------
-    aggregateHandler = (event) => {
-        const aggr = event.target.value
-        this.setState({ aggr: aggr })
+    //-------Function to handle datas of new student------------------- 
+    newStudentDataHandler = (event) => {
+        debugger
+        const { name, value } = event.target
+        this.setState(prevState => ({
+            newStudentData: {
+                ...prevState.newStudentData,
+                [name]: value
+            }
+        })
+        )
+        console.log(this.state.newStudentData)
     }
 
     //-------Function for add button--------
     addValues = () => {
-        const { studentList, id, fName, lName, aggr, pos } = this.state;
+        const { studentList, newStudentData } = this.state;
+        const { id, fName, lName, aggr, pos } = newStudentData
 
-        let idIsNotValid= this.idValidation(id)
-        
-        if(idIsNotValid){ 
-            alert('id is must')
+        let idIsNotValid = this.idValidation(id)
+
+        if (idIsNotValid) {
+            alert('id should be entered or the id entered exists')
             this.setState({
-                id: '', fName: '', lName: '', pos: studentList.length + 1, aggr: ''
-            })}
-        else{        
-        studentList.splice(pos - 1, 0, { id: id, firstName: fName, lastName: lName, Aggregate: aggr + '%' })
-        this.setState({
-            studentList: studentList,
-            id: '', fName: '', lName: '', pos: studentList.length + 1, aggr: ''
-        })
-    }
+                
+                newStudentData: {
+                    id: '', fName: '', lName: '', aggr: '', pos: studentList.length + 1,
+                }
+            })
+        }
+        else {
+            studentList.splice(pos - 1, 0, { id: id, firstName: fName, lastName: lName, Aggregate: aggr + '%' })
+            this.setState({
+                studentList: studentList,
+                newStudentData: {
+                    id: '', fName: '', lName: '', aggr: '', pos: studentList.length + 1
+                }
+            })
+        }
     }
 
+    //--------Function to edit data of a student-----------
     editHandler = (item) => {
         const { id, fName, lName, aggr } = item
-        const { studentList,editingIndex } = this.state
+        const { studentList, editingIndex } = this.state
 
-        // const fullId = studentList.map(item=> item.id)
-        // console.log(fullId)
-        // const checkid = (ids) => {return ids==id}
-        // const findindex = studentList.findIndex(item => item.id === id) 
-        // console.log(findindex);
+        let idIsNotValid = this.idValidation(id)
 
-        
-        let idIsNotValid= this.idValidation(id)
-        
-        if(idIsNotValid){ alert('id should be entered or id exists')}
-        else{
-        const index = editingIndex
-        studentList.splice(index, 1, { id: id, firstName: fName, lastName: lName, Aggregate: aggr })
-        this.setState({
-            studentList: studentList,
-            searchList: [],
-            input: ''
-        })
-    }
+        if (idIsNotValid) { alert('id should be entered or id exists') }
+        else {
+            const index = editingIndex
+            studentList.splice(index, 1, { id: id, firstName: fName, lastName: lName, Aggregate: aggr })
+            this.setState({
+                studentList: studentList,
+                searchList: [],
+                searchInput: ''
+            })
+        }
     }
 
+    //-------Function to take the index of editing data-----------
     setIndex = (id) => {
-        const {studentList} = this.state
-        const findIndex =  studentList.findIndex(item => item.id === id) 
-        
+        const { studentList } = this.state
+        const findIndex = studentList.findIndex(item => item.id === id)
+
         this.setState({
-            editingIndex:  findIndex
+            editingIndex: findIndex
         })
     }
 
+    //------Function for id validation------------
     idValidation = (id) => {
-        const {studentList} = this.state
-        const fullId = studentList.map(item=> item.id)
-        const check= fullId.includes(+id) || (id==='')
+        const { studentList } = this.state
+        const fullId = studentList.map(item => item.id)
+        const check = (fullId.includes(+id) || (id == !id)) && (id === '')  
         return check
-        
-        
     }
 
-    
+
     render() {
         return (
             <div>
                 <Search
-                    input={this.state.input}
+                    searchInput={this.state.searchInput}
                     onSearchHandler={this.onSearchHandler}
                     clearHandler={this.clearHandler} />
                 <div className="table">
@@ -205,16 +203,8 @@ class StudentList extends Component {
                 </div>
                 <div className="add">
                     <AddStudent
-                        pos={this.state.pos}
-                        positionHandler={this.positionHandler}
-                        id={this.state.id}
-                        newIdHandler={this.newIdHandler}
-                        fName={this.state.fName}
-                        firstNameHandler={this.firstNameHandler}
-                        lName={this.state.lName}
-                        lastNameHandler={this.lastNameHandler}
-                        aggr={this.state.aggr}
-                        aggregateHandler={this.aggregateHandler}
+                        newStudentDataHandler={this.newStudentDataHandler}
+                        newStudentData={this.state.newStudentData}
                         addValues={this.addValues} />
                     <Delete
                         idToDelete={this.state.idToDelete}

@@ -1,23 +1,24 @@
 import React from 'react';
 
 const AddStudent = (props) => {
-    const { pos,id, fName,lName,aggr,positionHandler,newIdHandler,firstNameHandler,lastNameHandler,aggregateHandler, addValues } = props
+    const { addValues, newStudentData, newStudentDataHandler } = props
+    const {id, fName, lName, aggr, pos} = newStudentData
     return (
         <div>
             <label>Enter the position: </label><br />
-            <input placeholder='Enter the Position' value={pos} type="number" onChange={positionHandler} />
+            <input placeholder='Enter the Position' value={pos} type="number" onChange={newStudentDataHandler} />
             <br />
             <label>Enter the id: </label><br />
-            <input placeholder='Enter the id' value={id} type="number" onChange={newIdHandler} />
+            <input placeholder='Enter the id' name="id" value={id} type="number" onChange={newStudentDataHandler} />
             <br />
             <label>Enter First Name: </label><br />
-            <input placeholder='First Name' value={fName} type="text" onChange={firstNameHandler} />
+            <input placeholder='First Name' name="fName" value={fName} type="text" onChange={newStudentDataHandler} />
             <br />
             <label>Enter Last Name: </label><br />
-            <input placeholder='Last Name' value={lName} type="text" onChange={lastNameHandler} />
+            <input placeholder='Last Name' name="lName" value={lName} type="text" onChange={newStudentDataHandler} />
             <br />
             <label>Enter Aggregate: </label><br />
-            <input placeholder='Aggregate' value={aggr} type="number" onChange={aggregateHandler} />
+            <input placeholder='Aggregate' name="aggr" value={aggr} type="number" onChange={newStudentDataHandler} />
             <br />
             <button onClick={addValues}>Add</button><br /><br />
         </div>
