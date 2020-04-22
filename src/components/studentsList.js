@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react'
+import React, { Component } from 'react'
 import './styles.css'
 
 import Search from './search'
@@ -18,6 +18,7 @@ class StudentList extends Component {
         aggr: '',
         pos: 0,
         idToDelete: '',
+        editingIndex:''
     }
 
     componentDidMount() {
@@ -126,30 +127,67 @@ class StudentList extends Component {
     //-------Function for add button--------
     addValues = () => {
         const { studentList, id, fName, lName, aggr, pos } = this.state;
+
+        let idIsNotValid= this.idValidation(id)
+        
+        if(idIsNotValid){ 
+            alert('id is must')
+            this.setState({
+                id: '', fName: '', lName: '', pos: studentList.length + 1, aggr: ''
+            })}
+        else{        
         studentList.splice(pos - 1, 0, { id: id, firstName: fName, lastName: lName, Aggregate: aggr + '%' })
         this.setState({
             studentList: studentList,
             id: '', fName: '', lName: '', pos: studentList.length + 1, aggr: ''
         })
     }
+    }
 
     editHandler = (item) => {
         const { id, fName, lName, aggr } = item
-        const { studentList } = this.state
+        const { studentList,editingIndex } = this.state
 
         // const fullId = studentList.map(item=> item.id)
         // console.log(fullId)
         // const checkid = (ids) => {return ids==id}
-        const findindex = studentList.findIndex(item => item.id === id) 
-        console.log(findindex);
+        // const findindex = studentList.findIndex(item => item.id === id) 
+        // console.log(findindex);
+
         
-        studentList.splice(findindex, 1, { id: id, firstName: fName, lastName: lName, Aggregate: aggr })
+        let idIsNotValid= this.idValidation(id)
+        
+        if(idIsNotValid){ alert('id should be entered or id exists')}
+        else{
+        const index = editingIndex
+        studentList.splice(index, 1, { id: id, firstName: fName, lastName: lName, Aggregate: aggr })
         this.setState({
             studentList: studentList,
             searchList: [],
             input: ''
         })
     }
+    }
+
+    setIndex = (id) => {
+        const {studentList} = this.state
+        const findIndex =  studentList.findIndex(item => item.id === id) 
+        
+        this.setState({
+            editingIndex:  findIndex
+        })
+    }
+
+    idValidation = (id) => {
+        const {studentList} = this.state
+        const fullId = studentList.map(item=> item.id)
+        const check= fullId.includes(+id) || (id==='')
+        return check
+        
+        
+    }
+
+    
     render() {
         return (
             <div>
@@ -162,7 +200,8 @@ class StudentList extends Component {
                         searchList={this.state.searchList}
                         studentList={this.state.studentList}
                         delButtonRow={this.delButtonRow}
-                        editHandler={this.editHandler} />
+                        editHandler={this.editHandler}
+                        setIndex={this.setIndex} />
                 </div>
                 <div className="add">
                     <AddStudent

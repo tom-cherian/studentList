@@ -32,7 +32,9 @@ const StudentTable = (props) => {
                                     lastName={list.lastName}
                                     Aggregate={list.Aggregate}
                                     id={list.id}
-                                    editHandler={props.editHandler} />
+                                    editHandler={props.editHandler}
+                                    setIndex={props.setIndex}
+                                     />
                             </td>
                         </tr>
                     </tbody>
@@ -51,7 +53,8 @@ const StudentTable = (props) => {
                                     lastName={list.lastName}
                                     Aggregate={list.Aggregate}
                                     id={list.id}
-                                    editHandler={props.editHandler} />
+                                    editHandler={props.editHandler}
+                                    setIndex={props.setIndex} />
                             </td>
                         </tr>
                     </tbody>

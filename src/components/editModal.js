@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 const EditModal = (props) => {
-    const { id, editHandler, firstName, lastName, Aggregate, modalOpen } = props
+    const { id, editHandler, firstName, lastName, Aggregate, setIndex } = props
 
     const [modal, setModal] = useState(false)
     const toggle = () => { setModal(!modal) }
@@ -22,26 +22,23 @@ const EditModal = (props) => {
     }
 
     useEffect(() => {
-        if (student.editId !== id) {
-            setEditedValues({
-                editId: id,
-                editFName: firstName,
-                editLName: lastName,
-                editAggr: Aggregate
-            })
-        }
-    });
-    
+        setEditedValues({
+            editId: '',
+            editFName: firstName,
+            editLName: lastName,
+            editAggr: Aggregate
+        })
+    }, [Aggregate, firstName, lastName, id]);
+
     const { editId, editFName, editLName, editAggr } = student
-    console.log(editId,id)
     return (
         <div>
-            <Button color='primary' onClick={toggle}> Edit</Button>
-            <Modal isOpen={modal} >
+            <Button color='primary' onClick={() => { toggle();  setIndex(id)  }}> Edit</Button>
+            <Modal isOpen={modal} toggle={toggle}>
                 <ModalHeader toggle={toggle}>Modal title</ModalHeader>
                 <ModalBody>
                     <label>Enter edited Id:</label><br />
-                    <input type="number" name="editId" placeholder="Enter newId" value={editId} onChange={onChange} /><br /><br />
+                    <input type="number" name="editId" placeholder="Enter newId" value={editId} onChange={onChange} isRe/><br /><br />
                     <label>Enter edited First Name:</label><br />
                     <input type="text" name="editFName" placeholder="first name" value={editFName} onChange={onChange} /><br /><br />
                     <label>Enter edited Last Name:</label><br />
