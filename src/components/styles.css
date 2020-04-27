@@ -22,3 +22,8 @@
 .modal{
     background-color: aquamarine;
 }
+nav{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}

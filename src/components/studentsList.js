@@ -1,34 +1,48 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import './styles.css'
 
-import Search from './search'
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link
+} from "react-router-dom";
+
 import AddStudent from './addStudents'
 import StudentTable from './studentTable'
-import Delete from './delete'
+
+import EditModal from './editModal'
 
 class StudentList extends Component {
 
     state = {
-        studentList: [],
-        searchList: [],
+        studentList: [...this.props.lists],
+        showList: [],
         searchInput: '',
         idToDelete: '',
-        editingIndex: '',
+        isOpen: false,
         newStudentData: {
             id: '',
             fName: '',
             lName: '',
-            aggr: '',
-            pos: 0
+            aggr: 0,
+            position: 0
+        },
+        currentSelectedItem: {
+            id: '',
+            fName: '',
+            lName: '',
+            aggr: ''
         }
     }
 
     componentDidMount() {
         const { lists } = this.props
+        const { studentList } = this.state
         this.setState({
-            studentList: [...lists],
-            newStudentData : {
-            pos: lists.length + 1,
+            showList: [...studentList],
+            newStudentData: {
+                position: lists.length + 1,
             }
         })
     }
@@ -46,13 +60,15 @@ class StudentList extends Component {
         if (searchList == '') {
             alert("no data found")
             this.setState({
-                studentList: studentList,
+                showList: studentList,
                 searchInput: ''
             })
         }
-        this.setState({
-            searchList: searchList
-        })
+        else {
+            this.setState({
+                showList: searchList
+            })
+        }
     }
 
     //-------Function to clear Search Box--------
@@ -60,8 +76,7 @@ class StudentList extends Component {
         const { studentList } = this.state
         this.setState({
             searchInput: '',
-            searchList: [],
-            studentList: studentList
+            showList: studentList
         })
     }
 
@@ -80,12 +95,12 @@ class StudentList extends Component {
             this.setState({ idToDelete: '' })
         } else {
             this.setState({
-                searchList: [],
                 searchInput: '',
                 studentList: newList,
+                showList: newList,
                 idToDelete: '',
-                newStudentData:{
-                pos: newList.length + 1
+                newStudentData: {
+                    position: newList.length + 1
                 }
             })
         }
@@ -95,21 +110,19 @@ class StudentList extends Component {
     delButtonRow = (id) => {
         let { studentList } = this.state
         const newList = studentList.filter(item => item.id != id)
-        debugger
         this.setState({
             studentList: newList,
-            searchList: [],
+            showList: newList,
             searchInput: '',
-            newStudentData:{
-                pos: newList.length + 1
-                }
+            newStudentData: {
+                position: newList.length + 1
+            }
         })
 
     }
 
     //-------Function to handle datas of new student------------------- 
     newStudentDataHandler = (event) => {
-        debugger
         const { name, value } = event.target
         this.setState(prevState => ({
             newStudentData: {
@@ -118,31 +131,40 @@ class StudentList extends Component {
             }
         })
         )
-        console.log(this.state.newStudentData)
     }
 
     //-------Function for add button--------
     addValues = () => {
         const { studentList, newStudentData } = this.state;
-        const { id, fName, lName, aggr, pos } = newStudentData
-
-        let idIsNotValid = this.idValidation(id)
-
-        if (idIsNotValid) {
-            alert('id should be entered or the id entered exists')
-            this.setState({
-                
-                newStudentData: {
-                    id: '', fName: '', lName: '', aggr: '', pos: studentList.length + 1,
-                }
-            })
+        const { id, fName, lName, aggr, position } = newStudentData
+        const existingIds = studentList.map(item => item.id)
+        if (id) {
+            if (existingIds.includes(+id)) {
+                alert('Id already exists')
+                this.setState({
+                    newStudentData: {
+                        id: '', fName: '', lName: '', aggr: '', position: studentList.length + 1,
+                    }
+                })
+            }
+            else {
+                studentList.splice(position - 1, 0, { id: +id, firstName: fName, lastName: lName, aggregate: aggr === undefined ? 0 + "%" : +aggr + '%' })
+                this.setState({
+                    studentList: studentList,
+                    showList: studentList,
+                    newStudentData: {
+                        id: '', fName: '', lName: '', aggr: '', position: studentList.length + 1
+                    }
+                })
+                console.log(studentList)
+                console.log(existingIds)
+            }
         }
         else {
-            studentList.splice(pos - 1, 0, { id: id, firstName: fName, lastName: lName, Aggregate: aggr + '%' })
+            alert('Id required')
             this.setState({
-                studentList: studentList,
                 newStudentData: {
-                    id: '', fName: '', lName: '', aggr: '', pos: studentList.length + 1
+                    id: '', fName: '', lName: '', aggr: '', position: studentList.length + 1,
                 }
             })
         }
@@ -151,68 +173,103 @@ class StudentList extends Component {
     //--------Function to edit data of a student-----------
     editHandler = (item) => {
         const { id, fName, lName, aggr } = item
-        const { studentList, editingIndex } = this.state
-
-        let idIsNotValid = this.idValidation(id)
-
-        if (idIsNotValid) { alert('id should be entered or id exists') }
+        const { studentList, currentSelectedItem } = this.state
+        const existingIdDatas = studentList.filter(item => item.id != currentSelectedItem.id)
+        const existingIds = existingIdDatas.map(item => item.id)
+        if (id) {
+            if (existingIds.includes(+id)) {
+                alert('Id already exists')
+            } else {
+                const editingId = currentSelectedItem.id
+                const index = studentList.findIndex(item => item.id === editingId)
+                studentList.splice(index, 1, { id: id, firstName: fName, lastName: lName, aggregate: aggr })
+                this.setState({
+                    studentList: studentList,
+                    showList: studentList,
+                    searchInput: ''
+                })
+            }
+        }
         else {
-            const index = editingIndex
-            studentList.splice(index, 1, { id: id, firstName: fName, lastName: lName, Aggregate: aggr })
-            this.setState({
-                studentList: studentList,
-                searchList: [],
-                searchInput: ''
-            })
+            alert('Enter an Id')
         }
     }
 
-    //-------Function to take the index of editing data-----------
-    setIndex = (id) => {
-        const { studentList } = this.state
-        const findIndex = studentList.findIndex(item => item.id === id)
-
+    //-------Function to toggle the state of modal for editing-----------
+    toggle = () => {
+        const prevState = this.state.isOpen
         this.setState({
-            editingIndex: findIndex
+            isOpen: !prevState,
+            currentSelectedItem: {
+                id: '', fName: '', lName: '', aggr: ''
+            }
         })
     }
 
-    //------Function for id validation------------
-    idValidation = (id) => {
+    //--------Function to pass selected item's data to modal
+    modalDataHandler = (itemId) => {
         const { studentList } = this.state
-        const fullId = studentList.map(item => item.id)
-        const check = (fullId.includes(+id) || (id == !id)) && (id === '')  
-        return check
+        const modalData = studentList.filter(item => item.id == +itemId)
+        const { id, firstName, lastName, aggregate } = modalData[0]
+        this.setState({
+            currentSelectedItem: {
+                id: id,
+                fName: firstName,
+                lName: lastName,
+                aggr: aggregate
+            }
+        })
     }
 
 
     render() {
         return (
-            <div>
-                <Search
-                    searchInput={this.state.searchInput}
-                    onSearchHandler={this.onSearchHandler}
-                    clearHandler={this.clearHandler} />
-                <div className="table">
-                    <StudentTable
-                        searchList={this.state.searchList}
-                        studentList={this.state.studentList}
-                        delButtonRow={this.delButtonRow}
-                        editHandler={this.editHandler}
-                        setIndex={this.setIndex} />
-                </div>
-                <div className="add">
-                    <AddStudent
-                        newStudentDataHandler={this.newStudentDataHandler}
-                        newStudentData={this.state.newStudentData}
-                        addValues={this.addValues} />
-                    <Delete
-                        idToDelete={this.state.idToDelete}
-                        deleteIdHandler={this.deleteIdHandler}
-                        onDeleteUsingId={this.onDeleteUsingId} />
-                </div>
+            <Fragment>
+                <Router>
+                    <div>
+                        <nav >
+                            <ul>
+                                <li>
+                                    <Link to="/">StudentTable</Link>
+                                </li>
+                                <li>
+                                    <Link to="/addStudent">AddStudent</Link>
+                                </li>
+                            </ul>
+                        </nav>
 
-            </div>
+                        {/* A <Switch> looks through its children <Route>s and
+            renders the first one that matches the current URL. */}
+                        <Switch>
+                            <Route exact path="/">
+                                <StudentTable
+                                    showList={this.state.showList}
+                                    delButtonRow={this.delButtonRow}
+                                    toggle={this.toggle}
+                                    modalDataHandler={this.modalDataHandler}
+                                    searchInput={this.state.searchInput}
+                                    onSearchHandler={this.onSearchHandler}
+                                    clearHandler={this.clearHandler}
+                                    idToDelete={this.state.idToDelete}
+                                    deleteIdHandler={this.deleteIdHandler}
+                                    onDeleteUsingId={this.onDeleteUsingId}
+                                />
+                            </Route>
+                            <Route path="/addStudent">
+                                <AddStudent
+                                    newStudentDataHandler={this.newStudentDataHandler}
+                                    newStudentData={this.state.newStudentData}
+                                    addValues={this.addValues} />
+                            </Route>
+                        </Switch>
+                    </div>
+                </Router>
+                <EditModal
+                    isOpen={this.state.isOpen}
+                    toggle={this.toggle}
+                    currentSelectedItem={this.state.currentSelectedItem}
+                    editHandler={this.editHandler} />
+            </Fragment>
         );
     };
 }

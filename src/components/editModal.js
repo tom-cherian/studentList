@@ -2,18 +2,15 @@ import React, { useState, useEffect } from 'react'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 const EditModal = (props) => {
-    const { id, editHandler, firstName, lastName, Aggregate, setIndex } = props
-
-    const [modal, setModal] = useState(false)
-    const toggle = () => { setModal(!modal) }
+    const {  editHandler, isOpen, toggle, currentSelectedItem } = props
+    const { id , fName, lName, aggr } = currentSelectedItem
 
     const [student, setEditedValues] = useState({
         editId: id,
-        editFName: firstName,
-        editLName: lastName,
-        editAggr: Aggregate
+        editFName: fName,
+        editLName: lName,
+        editAggr: aggr
     })
-
     const onChange = (event) => {
         setEditedValues({
             ...student,
@@ -24,17 +21,17 @@ const EditModal = (props) => {
     useEffect(() => {
         setEditedValues({
             editId: id,
-            editFName: firstName,
-            editLName: lastName,
-            editAggr: Aggregate
+            editFName: fName,
+            editLName: lName,
+            editAggr: aggr
         })
-    }, [Aggregate, firstName, lastName, id]);
+    }, [aggr, fName, lName, id]);
+console.log('******************************')
 
     const { editId, editFName, editLName, editAggr } = student
     return (
         <div>
-            <Button color='primary' onClick={() => { toggle(); setIndex(id) }}> Edit</Button>
-            <Modal isOpen={modal} toggle={toggle}>
+            <Modal isOpen={isOpen} toggle={toggle}>
                 <ModalHeader toggle={toggle}>Modal title</ModalHeader>
                 <ModalBody>
                     <label>Enter edited Id:</label><br />
@@ -51,8 +48,8 @@ const EditModal = (props) => {
                         onClick={() => {
                             editHandler({
                                 id: editId,
-                                fName: editFName.charAt(0).toUpperCase() + editFName.slice(1),
-                                lName: editLName.charAt(0).toUpperCase() + editLName.slice(1),
+                                fName: editFName,
+                                lName: editLName,
                                 aggr: editAggr.endsWith('%') ? editAggr : editAggr + '%'
                             });
                             toggle()

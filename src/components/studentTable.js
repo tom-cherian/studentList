@@ -1,68 +1,54 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 
-import EditModal from './editModal'
+import Delete from './delete'
+import Search from './search'
 
 const StudentTable = (props) => {
-    const { searchList, studentList, delButtonRow, editHandler, setIndex } = props
+    const { delButtonRow, toggle, modalDataHandler, showList, searchInput, onSearchHandler, clearHandler, idToDelete, deleteIdHandler, onDeleteUsingId } = props
     return (
-        <table>
-            <thead>
-                <tr >
-                    <th className="Row">Sl No.</th>
-                    <th className="Row">Id</th>
-                    <th className="Row">Name</th>
-                    <th className="Row">Last Name</th>
-                    <th className="Row">Aggregate</th>
-                    <th className="Row">Delete</th>
-                    <th className="Row">Edit</th>
-                </tr>
-            </thead>
-            {searchList.length ?
-                searchList.map((list, index) =>
-                    <tbody key={index}>
-                        <tr>
-                            <td className="Row" >{index + 1} </td>
-                            <td className="Row" >{list.id} </td>
-                            <td className="Row" >{list.firstName} </td>
-                            <td className="Row" >{list.lastName} </td>
-                            <td className="Row" >{list.Aggregate} </td>
-                            <td className="Row Delete" onClick={() => delButtonRow(list.id)}>Delete</td>
-                            <td className="Row" >
-                                <EditModal
-                                    firstName={list.firstName}
-                                    lastName={list.lastName}
-                                    Aggregate={list.Aggregate}
-                                    id={list.id}
-                                    editHandler={editHandler}
-                                    setIndex={setIndex}
-                                     />
-                            </td>
+        <Fragment>
+            <Search
+                searchInput={searchInput}
+                onSearchHandler={onSearchHandler}
+                clearHandler={clearHandler} />
+            <br />
+            <div className="table" >
+                <table>
+                    <thead>
+                        <tr >
+                            <th className="Row">Sl No.</th>
+                            <th className="Row">Id</th>
+                            <th className="Row">Name</th>
+                            <th className="Row">Last Name</th>
+                            <th className="Row">Aggregate</th>
+                            <th className="Row">Delete</th>
+                            <th className="Row">Edit</th>
                         </tr>
-                    </tbody>
-                ) : studentList.map((list, index) =>
-                    <tbody key={index}>
-                        <tr>
-                            <td className="Row" >{index + 1} </td>
-                            <td className="Row" >{list.id} </td>
-                            <td className="Row" >{list.firstName} </td>
-                            <td className="Row" >{list.lastName} </td>
-                            <td className="Row" >{list.Aggregate} </td>
-                            <td className="Row Delete" onClick={() => delButtonRow(list.id)}>Delete</td>
-                            <td className="Row">
-                                <EditModal
-                                    firstName={list.firstName}
-                                    lastName={list.lastName}
-                                    Aggregate={list.Aggregate}
-                                    id={list.id}
-                                    editHandler={editHandler}
-                                    setIndex={setIndex} />
-                            </td>
-                        </tr>
-                    </tbody>
+                    </thead>
+                    {showList.map((item, index) =>
+                        <tbody key={index}>
+                            <tr>
+                                <td className="Row" >{index + 1} </td>
+                                <td className="Row" >{item.id} </td>
+                                <td className="Row" >{item.firstName} </td>
+                                <td className="Row" >{item.lastName} </td>
+                                <td className="Row" >{item.aggregate} </td>
+                                <td className="Row Delete" onClick={() => delButtonRow(item.id)}>Delete</td>
+                                <td className="Row" >
+                                    <button onClick={() => { toggle(); modalDataHandler(item.id) }} > Edit </button>
+                                </td>
+                            </tr>
+                        </tbody>)
+                    }
+                </table>
+                <br />
+                <Delete
+                    idToDelete={idToDelete}
+                    deleteIdHandler={deleteIdHandler}
+                    onDeleteUsingId={onDeleteUsingId} />
+            </div>
 
-                )
-            }
-        </table>
+        </Fragment>
     )
 }
 
