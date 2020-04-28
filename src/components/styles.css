@@ -22,7 +22,7 @@
 .modal{
     background-color: aquamarine;
 }
-nav{
+.nav{
     display: flex;
     justify-content: space-around;
     align-items: center;

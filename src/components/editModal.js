@@ -30,7 +30,7 @@ console.log('******************************')
 
     const { editId, editFName, editLName, editAggr } = student
     return (
-        <div>
+        
             <Modal isOpen={isOpen} toggle={toggle}>
                 <ModalHeader toggle={toggle}>Modal title</ModalHeader>
                 <ModalBody>
@@ -59,7 +59,6 @@ console.log('******************************')
                     <Button color="secondary" onClick={toggle}>Cancel</Button>
                 </ModalFooter>
             </Modal>
-        </div>
     )
 }
 export default EditModal;

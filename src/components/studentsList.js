@@ -1,22 +1,21 @@
 import React, { Component, Fragment } from 'react'
 import './styles.css'
 
-import {
-    BrowserRouter as Router,
-    Switch,
-    Route,
-    Link
-} from "react-router-dom";
-
-import AddStudent from './addStudents'
 import StudentTable from './studentTable'
-
 import EditModal from './editModal'
+import Navbar from './navbar'
+
+const students = [
+    { id: 1, firstName: 'Tom', lastName: 'Cherian', aggregate: '75%'},
+    { id: 2, firstName: 'Jithu', lastName: 'Jose', aggregate: '80%'},
+    { id: 3, firstName: 'Arun', lastName: 'George', aggregate: '82%'},
+    { id: 4, firstName: 'Krishnadev', lastName: 'M P', aggregate: '78%'},
+  ];
 
 class StudentList extends Component {
 
     state = {
-        studentList: [...this.props.lists],
+        studentList: [...students],
         showList: [],
         searchInput: '',
         idToDelete: '',
@@ -37,12 +36,11 @@ class StudentList extends Component {
     }
 
     componentDidMount() {
-        const { lists } = this.props
         const { studentList } = this.state
         this.setState({
             showList: [...studentList],
             newStudentData: {
-                position: lists.length + 1,
+                position: studentList.length + 1,
             }
         })
     }
@@ -225,45 +223,29 @@ class StudentList extends Component {
     render() {
         return (
             <Fragment>
-                <Router>
-                    <div>
-                        <nav >
-                            <ul>
-                                <li>
-                                    <Link to="/">StudentTable</Link>
-                                </li>
-                                <li>
-                                    <Link to="/addStudent">AddStudent</Link>
-                                </li>
-                            </ul>
-                        </nav>
-
-                        {/* A <Switch> looks through its children <Route>s and
-            renders the first one that matches the current URL. */}
-                        <Switch>
-                            <Route exact path="/">
-                                <StudentTable
-                                    showList={this.state.showList}
-                                    delButtonRow={this.delButtonRow}
-                                    toggle={this.toggle}
-                                    modalDataHandler={this.modalDataHandler}
-                                    searchInput={this.state.searchInput}
-                                    onSearchHandler={this.onSearchHandler}
-                                    clearHandler={this.clearHandler}
-                                    idToDelete={this.state.idToDelete}
-                                    deleteIdHandler={this.deleteIdHandler}
-                                    onDeleteUsingId={this.onDeleteUsingId}
-                                />
-                            </Route>
-                            <Route path="/addStudent">
-                                <AddStudent
-                                    newStudentDataHandler={this.newStudentDataHandler}
-                                    newStudentData={this.state.newStudentData}
-                                    addValues={this.addValues} />
-                            </Route>
-                        </Switch>
-                    </div>
-                </Router>
+                <Navbar />
+                <StudentTable
+                    showList={this.state.showList}
+                    delButtonRow={this.delButtonRow}
+                    toggle={this.toggle}
+                    modalDataHandler={this.modalDataHandler}
+                    searchInput={this.state.searchInput}
+                    onSearchHandler={this.onSearchHandler}
+                    clearHandler={this.clearHandler}
+                    idToDelete={this.state.idToDelete}
+                    deleteIdHandler={this.deleteIdHandler}
+                    onDeleteUsingId={this.onDeleteUsingId}
+                />
+                {/* </Route> */}
+                {/* <Route path="/addStudent"> */}
+                {/* <AddStudent
+                    newStudentDataHandler={this.newStudentDataHandler}
+                    newStudentData={this.state.newStudentData}
+                    addValues={this.addValues} /> */}
+                {/* </Route> */}
+                {/* </Switch> */}
+                {/* </div> */}
+                {/* </Router> */}
                 <EditModal
                     isOpen={this.state.isOpen}
                     toggle={this.toggle}
