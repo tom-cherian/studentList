@@ -13,6 +13,8 @@ export default class AppRouter extends Component {
             <Switch>
                 <Route exact path="/"
                     component={Welcome} />
+                <Route path="/home"
+                    component={Welcome} />
                 <Route path="/studentTable"
                     component={StudentList} />
                 <Route path="/addStudent"

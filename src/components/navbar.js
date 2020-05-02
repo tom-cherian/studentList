@@ -8,7 +8,7 @@ export default function Navbar() {
         <h2 style={{color: "red"}}>Welcome to Students List</h2>
         <Nav tab="true" >
             <NavItem>
-                <Link to="/"> Home</Link>
+                <Link to="/home"> Home</Link>
             </NavItem>
             <NavItem>
                 <Link to="/studentTable">Student List</Link>
